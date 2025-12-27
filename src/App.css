@@ -1,0 +1,7 @@
+body {
+    margin: 0;
+}
+
+.MuiListItem-root {
+    color: currentColor;
+}

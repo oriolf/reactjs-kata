@@ -89,10 +89,11 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   justifyContent: "flex-end",
 }));
 
-const menuItems: { label: string; href: string; icon: any }[] = [
-  { label: "Inici", href: "/", icon: <HomeIcon /> },
-  { label: "Inicia sessió", href: "/login", icon: <LoginIcon /> },
-  { label: "Membres", href: "/members", icon: <PeopleIcon /> },
+const translateMsgs = ["Inici", "Inicia sessió", "Membres"];
+const allMenuItems: { label: string; href: string; icon: any }[] = [
+  { label: translateMsgs[0], href: "/", icon: <HomeIcon /> },
+  { label: translateMsgs[1], href: "/login", icon: <LoginIcon /> },
+  { label: translateMsgs[2], href: "/members", icon: <PeopleIcon /> },
 ];
 
 export default function Layout({
@@ -100,7 +101,7 @@ export default function Layout({
   children,
 }: {
   title: string;
-  children: any;
+  children?: any;
 }) {
   const theme = useTheme();
   const [open, setOpen] = useLocalStorage("drawer", false);
@@ -138,6 +139,10 @@ export default function Layout({
   };
 
   const { user, logout } = useAuth();
+  let menuItems = [allMenuItems[0], allMenuItems[1]];
+  if (user) {
+    menuItems = [allMenuItems[0], allMenuItems[2]];
+  }
   return (
     <Box sx={{ display: "flex" }}>
       <AppBar position="fixed" open={open}>

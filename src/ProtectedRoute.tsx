@@ -4,7 +4,8 @@ import { useAuth } from "./hooks/useAuth";
 export const ProtectedRoute: any = ({ children }: { children: any }) => {
   const { user } = useAuth();
   if (!user) {
-    return <Navigate to="/login?alert=Pàgina protegida, per favor, inicia sessió primer" />;
+    const translateMsg = "Pàgina protegida, per favor, inicia sessió primer";
+    return <Navigate to={"/login?alert=" + translateMsg} />;
   }
 
   return children;

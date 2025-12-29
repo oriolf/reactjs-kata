@@ -1,50 +1,34 @@
 import { useEffect, useState } from "react";
-import Layout from "../Layout";
 import { useHttp } from "../hooks/useHttp";
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
+import { TableCell, TableRow, Typography } from "@mui/material";
+import PaginatedTable from "../components/PaginatedTable";
+import Layout from "../Layout";
 
 export const MembersPage = () => {
   const [members, setMembers] = useState<any>(null);
   const { get } = useHttp();
   useEffect(() => {
-    const fetchData = async () => {
-      const data = await get<any>("api/members");
-      setMembers(data.items);
-      console.log("MEMBERS:", data);
-    };
-    fetchData();
+    get<any>("api/members").then((data) => setMembers(data.items));
   }, []);
+  const translateMsgTitle = "Membres";
+  const translateMsgHeaders = ["Nom", "NIF", "Soci/a des de"];
   return (
-    <Layout title="Membres">
+    <Layout title={translateMsgTitle}>
       <Typography component="h1" variant="h5">
-        Membres
+        {translateMsgTitle}
       </Typography>
       {members && (
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
-            <TableHead>
-              <TableRow>
-                <TableCell>Nom</TableCell>
-                <TableCell>NIF</TableCell>
-                <TableCell>Soci/a des de</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {members.map((member: any) => (
-                <TableRow
-                  key={member.id}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  <TableCell component="th" scope="row">
-                    {member.name}
-                  </TableCell>
-                  <TableCell>{member.nif}</TableCell>
-                  <TableCell>{member.joined_on}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+        <PaginatedTable headers={translateMsgHeaders}>
+          {members.map((member: any) => (
+            <TableRow key={member.id}>
+              <TableCell component="th" scope="row">
+                {member.name}
+              </TableCell>
+              <TableCell>{member.nif}</TableCell>
+              <TableCell>{member.joined_on}</TableCell>
+            </TableRow>
+          ))}
+        </PaginatedTable>
       )}
     </Layout>
   );

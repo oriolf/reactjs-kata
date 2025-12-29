@@ -9,18 +9,19 @@ export const LoginPage = () => {
   const handleSubmit = async (event: any) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    const res = await post<{ok: boolean}>("api/login", {
+    const res = await post<{ ok: boolean }>("api/login", {
       email: data.get("email"),
       password: data.get("password"),
-    })
+    });
     if (res && res.ok) {
       const me = await get<any>("api/me");
-      login(me)
+      login(me);
     }
   };
 
+  const translateMsg = "Inicia sessió";
   return (
-    <Layout title="Inicia sessió">
+    <Layout title={translateMsg}>
       <Container component="main" maxWidth="xs">
         <Box
           sx={{
@@ -31,7 +32,7 @@ export const LoginPage = () => {
           }}
         >
           <Typography component="h1" variant="h5">
-            Inicia sessió
+            {translateMsg}
           </Typography>
           <Box
             component="form"
@@ -65,7 +66,7 @@ export const LoginPage = () => {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Inicia sessió
+              {translateMsg}
             </Button>
           </Box>
         </Box>

@@ -1,41 +1,21 @@
-# Material UI - Vite example in TypeScript
+# Associa't
 
-## How to use
+Associa't és un exercici per aprendre React, fent servir les millors pràctiques disponibles de moment. No és un exercici limitat, sinó que és una web completa que permet gestionar el dia a dia d'una associació, amb alta i baixa de socis, cobraments de quotes, convocatòria d'assemblees, votacions, i més.
 
-Download the example [or clone the repo](https://github.com/mui/material-ui):
+El _backend_ de la web està implementat en llenguatge Go, i es pot trobar en l'exemple del _framework_ de desenvolupament web [Simple APP](https://github.com/oriolf/simple-app).
 
-<!-- #target-branch-reference -->
+L'estructura de la web parteix de l'exemple `material-ui-vite-ts` del repositori de [Material UI](https://github.com/mui/material-ui), però conserva poc de l'original a banda de les configuracions de Node, Vite i Typescript.
 
-```bash
-curl https://codeload.github.com/mui/material-ui/tar.gz/master | tar -xz --strip=2 material-ui-master/examples/material-ui-vite-ts
-cd material-ui-vite-ts
-```
-
-Install it and run:
+Per instal·lar i fer desenvolupament en local, en aquest repositori:
 
 ```bash
 npm install
 npm run dev
 ```
 
-or:
+I en el repositori de Simple APP:
 
-<!-- #target-branch-reference -->
-
-[![Edit on CodeSandbox](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/p/sandbox/github/mui/material-ui/tree/master/examples/material-ui-vite-ts)
-
-[![Edit on StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/mui/material-ui/tree/master/examples/material-ui-vite-ts)
-
-## The idea behind the example
-
-<!-- #host-reference -->
-
-This example demonstrates how you can use Material UI with [Vite](https://vite.dev) in [TypeScript](https://github.com/Microsoft/TypeScript).
-It includes `@mui/material` and its peer dependencies, including [Emotion](https://emotion.sh/docs/introduction), the default style engine in Material UI.
-
-## What's next?
-
-<!-- #host-reference -->
-
-You now have a working example project.
-You can head back to the documentation and continue by browsing the [templates](https://mui.com/material-ui/getting-started/templates/) section.
+```bash
+go build
+./example http
+```

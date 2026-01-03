@@ -38,7 +38,7 @@ export function App() {
       let newAlerts = [...prev];
       let a = !alert.cause && !newAlerts.some((x) => x.msg === alert.msg);
       let b = alert.cause && !newAlerts.some((x) => x.cause === alert.cause);
-      if (a || b) {
+      if (alert.msg && (a || b)) {
         newAlerts.push(alert);
       }
 
@@ -49,7 +49,6 @@ export function App() {
   useEffect(() => {
     if (snackPack.length && !messageInfo) {
       setMessageinfo({ ...snackPack[0] });
-      setSnackpack((prev) => prev.slice(1));
       setOpenSnackbar(true);
     }
   }, [snackPack, messageInfo, openSnackbar]);
@@ -64,6 +63,7 @@ export function App() {
   };
 
   const handleExited = () => {
+    setSnackpack((prev) => prev.slice(1));
     setMessageinfo(undefined);
   };
 

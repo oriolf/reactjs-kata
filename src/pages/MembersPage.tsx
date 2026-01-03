@@ -8,7 +8,7 @@ import { useAlerts } from "../App";
 import { ApiCallStatus, LoadingStatus, type ListResponse } from "../api/types";
 import type { Member } from "../api/Member";
 import TableErrors from "../components/TableErrors";
-import Loading from "../components/Loading";
+import TableLoading from "../components/TableLoading";
 
 export const MembersPage = () => {
   const [status, setStatus] = useState<ApiCallStatus<Member[]>>(
@@ -25,12 +25,11 @@ export const MembersPage = () => {
   const translateMsgHeaders = ["Nom", "NIF", "Soci/a des de"];
   return (
     <Layout title={translateMsgTitle}>
-      <Typography component="h1" variant="h5">
-        {translateMsgTitle}
-      </Typography>
       <PaginatedTable headers={translateMsgHeaders}>
-        {status.isLoading() ? <Loading /> : null}
-        {status.isErrors() ? <TableErrors errors={status.errors} /> : null}
+        {status.isLoading() ? <TableLoading /> : null}
+        {status.isErrors() ? (
+          <TableErrors errors={status.errors} columnCount={3} />
+        ) : null}
         {status.isResult()
           ? status.result.map((member: any) => (
               <TableRow key={member.id}>

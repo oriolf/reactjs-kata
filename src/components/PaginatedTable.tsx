@@ -25,7 +25,7 @@ export default function PaginatedTable({
             ))}
           </TableRow>
         </TableHead>
-        <TableBody>{children}</TableBody>
+        <TableBody style={{ position: "relative" }}>{children}</TableBody>
       </Table>
     </TableContainer>
   );

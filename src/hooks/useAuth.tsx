@@ -1,24 +1,28 @@
 import { createContext, useContext, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLocalStorage } from "./useLocalStorage";
+import { NewAlertMessage, useAlerts } from "../App";
+
+import type { User } from "../api/User";
+
 const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }: { children: any }): any => {
   const [user, setUser] = useLocalStorage("user", null);
   const navigate = useNavigate();
+  const { sendAlert } = useAlerts();
 
-  const login = async (data: any) => {
+  const login = async (data: User) => {
     setUser(data);
     navigate("/");
   };
 
-  const logout = (msg: string | undefined) => {
-    setUser(null);
-    let url = "/";
+  const logout = (msg?: string) => {
     if (msg) {
-      url += "?alert=" + msg;
+      sendAlert(NewAlertMessage(msg, "warning", "logout"));
     }
-    navigate(url, { replace: true });
+    setUser(null);
+    navigate("/", { replace: true });
   };
 
   const value = useMemo(

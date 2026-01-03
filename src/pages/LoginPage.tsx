@@ -2,21 +2,25 @@ import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import Layout from "../Layout";
 import { useHttp } from "../hooks/useHttp";
 import { useAuth } from "../hooks/useAuth";
+import type { JsonOk } from "../api/types";
+import type { User } from "../api/User";
+import { useAlerts } from "../App";
+import { sendAlerts } from "../utils";
 
 export const LoginPage = () => {
   const { login } = useAuth();
   const { get, post } = useHttp();
+  const { sendAlert } = useAlerts();
   const handleSubmit = async (event: any) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    const res = await post<{ ok: boolean }>("api/login", {
+    post<JsonOk>("api/login", {
       email: data.get("email"),
       password: data.get("password"),
-    });
-    if (res && res.ok) {
-      const me = await get<any>("api/me");
-      login(me);
-    }
+    })
+      .then(() => get<User>("api/me"))
+      .then((me) => login(me))
+      .catch((errs) => sendAlerts(sendAlert, errs));
   };
 
   const translateMsg = "Inicia sessió";

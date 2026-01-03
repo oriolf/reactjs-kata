@@ -1,15 +1,7 @@
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import {
-  Alert,
-  Drawer,
-  IconButton,
-  Snackbar,
-  SnackbarCloseReason,
-  Toolbar,
-} from "@mui/material";
+import { Drawer, IconButton, Toolbar } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import { useEffect, useState } from "react";
 import { styled, useTheme } from "@mui/material/styles";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import List from "@mui/material/List";
@@ -105,30 +97,6 @@ export default function Layout({
 }) {
   const theme = useTheme();
   const [open, setOpen] = useLocalStorage("drawer", false);
-  const [alertContent, setAlertContent] = useState("");
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-  useEffect(() => {
-    const searchParams = new URLSearchParams(document.location.search);
-    const alert = searchParams.get("alert");
-    if (alert) {
-      setAlertContent(alert);
-      setOpenSnackbar(true);
-      searchParams.delete("alert");
-      const newURL = `${window.location.pathname}?${searchParams.toString()}`;
-      window.history.pushState({ path: newURL }, "", newURL);
-    }
-  }, []);
-
-  const handleCloseSnackbar = (
-    event?: React.SyntheticEvent | Event,
-    reason?: SnackbarCloseReason
-  ) => {
-    if (reason === "clickaway") {
-      return;
-    }
-
-    setOpenSnackbar(false);
-  };
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -224,20 +192,6 @@ export default function Layout({
         <DrawerHeader />
         {children}
       </Main>
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={3000}
-        onClose={handleCloseSnackbar}
-      >
-        <Alert
-          onClose={handleCloseSnackbar}
-          severity="warning"
-          variant="filled"
-          sx={{ width: "100%" }}
-        >
-          {alertContent}
-        </Alert>
-      </Snackbar>
     </Box>
   );
 }

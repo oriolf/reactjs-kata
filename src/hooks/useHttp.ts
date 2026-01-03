@@ -1,23 +1,36 @@
 import { useAuth } from "./useAuth";
+import type { JsonError } from "../api/types";
 
 const BASE_URL = "http://localhost:8080/";
+
+export class ApiError extends Error {
+  errors: { [key: string]: string[] };
+
+  constructor(json: JsonError) {
+    super("ApiError");
+    this.name = "ApiError";
+    this.errors = json.errors;
+  }
+}
 
 export const useHttp = () => {
   const { logout } = useAuth();
 
-  async function result<T>(res: Response): Promise<T | null> {
+  async function result<T>(res: Response): Promise<T> {
+    let json = await res.json();
     if (res.status === 401) {
       const translateMsg = "La sessió ha caducat";
       logout(translateMsg);
     }
+
     if (res.status !== 200) {
-      return null;
+      throw new ApiError(json);
     }
 
-    return await res.json();
+    return json;
   }
 
-  async function post<T>(url: string, body: any): Promise<T | null> {
+  async function post<T>(url: string, body: any): Promise<T> {
     const res = await fetch(BASE_URL + url, {
       method: "POST",
       credentials: "include",
@@ -27,7 +40,7 @@ export const useHttp = () => {
     return await result(res);
   }
 
-  async function get<T>(url: string): Promise<T | null> {
+  async function get<T>(url: string): Promise<T> {
     const res = await fetch(BASE_URL + url, {
       credentials: "include",
     });

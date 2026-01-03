@@ -1,26 +1,29 @@
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import Layout from "../Layout";
-import { useHttp } from "../hooks/useHttp";
+import { ApiError, useHttp } from "../hooks/useHttp";
 import { useAuth } from "../hooks/useAuth";
-import type { JsonOk } from "../api/types";
+import { ApiCallStatus, LoadingStatus, type JsonOk } from "../api/types";
 import type { User } from "../api/User";
 import { useAlerts } from "../App";
-import { sendAlerts } from "../utils";
+import { useState } from "react";
+import LoginIcon from "@mui/icons-material/Login";
 
 export const LoginPage = () => {
   const { login } = useAuth();
   const { get, post } = useHttp();
   const { sendAlert } = useAlerts();
+  const [status, setStatus] = useState<ApiCallStatus<JsonOk>>(LoadingStatus());
   const handleSubmit = async (event: any) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
+    setStatus(status.setLoading(true));
     post<JsonOk>("api/login", {
       email: data.get("email"),
       password: data.get("password"),
     })
       .then(() => get<User>("api/me"))
       .then((me) => login(me))
-      .catch((errs) => sendAlerts(sendAlert, errs));
+      .catch((err: ApiError) => setStatus(status.setErrors(err, sendAlert)));
   };
 
   const translateMsg = "Inicia sessió";
@@ -53,6 +56,8 @@ export const LoginPage = () => {
               name="email"
               autoComplete="email"
               autoFocus
+              error={status.hasError("email")}
+              helperText={status.errorText("email")}
             />
             <TextField
               margin="normal"
@@ -63,12 +68,17 @@ export const LoginPage = () => {
               type="password"
               id="password"
               autoComplete="current-password"
+              error={status.hasError("password")}
+              helperText={status.errorText("password")}
             />
             <Button
               type="submit"
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              loading={status.isLoading()}
+              loadingPosition="end"
+              endIcon={<LoginIcon />}
             >
               {translateMsg}
             </Button>

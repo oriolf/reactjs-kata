@@ -12,7 +12,7 @@ import TableLoading from "../components/TableLoading";
 
 export const MembersPage = () => {
   const [status, setStatus] = useState<ApiCallStatus<Member[]>>(
-    LoadingStatus()
+    LoadingStatus(true)
   );
   const { get } = useHttp();
   const { sendAlert } = useAlerts();

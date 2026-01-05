@@ -28,6 +28,12 @@ export type AlertMessage = {
   cause?: string;
 };
 
+export type TableHeader = {
+  key: number;
+  label: string;
+  width: number;
+};
+
 export class ApiCallStatus<T> {
   loading: boolean;
   result?: T;
@@ -44,11 +50,13 @@ export class ApiCallStatus<T> {
   }
 
   isLoading(): this is ApiCallLoadingStatus {
-    return !this.result && !this.errors && this.loading;
+    return this.loading;
   }
 
   isResult(): this is ApiCallResultStatus<T> {
-    return this.result !== undefined;
+    return (
+      this.result !== undefined && this.errors === undefined && !this.loading
+    );
   }
 
   isErrors(): this is ApiCallErrorsStatus<T> {
@@ -56,11 +64,11 @@ export class ApiCallStatus<T> {
   }
 
   setLoading(loading: boolean): ApiCallStatus<T> {
-    return new ApiCallStatus(loading);
+    return new ApiCallStatus(loading, this.result, undefined);
   }
 
   setResult(result: T): ApiCallStatus<T> {
-    return new ApiCallStatus(false, result);
+    return new ApiCallStatus(false, result, undefined);
   }
 
   setErrors(
@@ -69,7 +77,7 @@ export class ApiCallStatus<T> {
   ): ApiCallStatus<T> {
     sendAlerts(alertFunc, errors);
 
-    return new ApiCallStatus<T>(false, undefined, errors);
+    return new ApiCallStatus<T>(false, this.result, errors);
   }
 
   hasError(key: string): boolean {
@@ -89,8 +97,11 @@ export class ApiCallStatus<T> {
   }
 }
 
-export function LoadingStatus<T>(loading: boolean = false): ApiCallStatus<T> {
-  return new ApiCallStatus<T>(loading);
+export function LoadingStatus<T>(
+  loading: boolean = false,
+  placeholder?: T
+): ApiCallStatus<T> {
+  return new ApiCallStatus<T>(loading, placeholder);
 }
 
 export type ApiCallPendingStatus = { loading: false };

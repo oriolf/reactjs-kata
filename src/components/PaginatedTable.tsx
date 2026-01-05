@@ -4,6 +4,7 @@ import {
   TableBody,
   TableCell,
   TableContainer,
+  TableFooter,
   TableHead,
   TablePagination,
   TableRow,
@@ -11,6 +12,7 @@ import {
   Typography,
 } from "@mui/material";
 import { ChangeEvent, useEffect, useState } from "react";
+import type { TableHeader } from "../api/types";
 
 export default function PaginatedTable({
   title,
@@ -20,7 +22,7 @@ export default function PaginatedTable({
   fetchFunc,
 }: {
   title?: string;
-  headers: string[];
+  headers: TableHeader[];
   children: any;
   total?: number;
   fetchFunc: (page: number, itemsPerPage: number) => void;
@@ -48,25 +50,31 @@ export default function PaginatedTable({
         </Toolbar>
       )}
       <TableContainer>
-        <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+        <Table sx={{ minWidth: 650 }} aria-label="a dense table">
           <TableHead>
             <TableRow>
               {headers.map((header) => (
-                <TableCell key={header}>{header}</TableCell>
+                <TableCell key={header.key} width={header.width + "%"}>
+                  {header.label}
+                </TableCell>
               ))}
             </TableRow>
           </TableHead>
           <TableBody style={{ position: "relative" }}>{children}</TableBody>
+          <TableFooter>
+            <TableRow>
+              <TablePagination
+                rowsPerPageOptions={[defaultPerPage, 25, 100]}
+                count={total || 0}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
+            </TableRow>
+          </TableFooter>
         </Table>
       </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[defaultPerPage, 25, 100]}
-        count={total || 0}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
     </Paper>
   );
 }

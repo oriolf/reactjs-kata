@@ -12,7 +12,9 @@ export const LoginPage = () => {
   const { login } = useAuth();
   const { get, post } = useHttp();
   const { sendAlert } = useAlerts();
-  const [status, setStatus] = useState<ApiCallStatus<JsonOk>>(LoadingStatus());
+  const [status, setStatus] = useState<ApiCallStatus<JsonOk>>(
+    LoadingStatus(false)
+  );
   const handleSubmit = async (event: any) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);

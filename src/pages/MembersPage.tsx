@@ -12,7 +12,19 @@ import TableLoading from "../components/TableLoading";
 
 export const MembersPage = () => {
   const [status, setStatus] = useState<ApiCallStatus<ListResponse<Member>>>(
-    LoadingStatus(true)
+    LoadingStatus(true, {
+      total: 0,
+      items: [
+        {
+          id: 0,
+          name: "-",
+          nif: "-",
+          joined_on: "-",
+          left_on: null,
+          iban: null,
+        },
+      ],
+    })
   );
   const { get } = useHttp();
   const { sendAlert } = useAlerts();
@@ -23,11 +35,24 @@ export const MembersPage = () => {
     });
     setStatus(status.setLoading(true));
     get<ListResponse<Member>>("api/members?" + params.toString())
-      .then((data) => setStatus(status.setResult(data)))
+      //.then((data) => setStatus(status.setResult(data)))
       .catch((err: ApiError) => setStatus(status.setErrors(err, sendAlert)));
   };
   const translateMsgTitle = "Membres";
-  const translateMsgHeaders = ["Nom", "NIF", "Soci/a des de"];
+  const translateMsgHeaders = [
+    { key: 1, label: "Nom", width: 50 },
+    { key: 2, label: "NIF", width: 25 },
+    { key: 3, label: "Soci/a des de", width: 25 },
+  ];
+  const rows = status.result?.items.map((member: Member) => (
+    <TableRow key={member.id}>
+      <TableCell component="th" scope="row" width="50%">
+        {member.name}
+      </TableCell>
+      <TableCell width="25%">{member.nif}</TableCell>
+      <TableCell width="25%">{member.joined_on}</TableCell>
+    </TableRow>
+  ));
   return (
     <Layout title={translateMsgTitle}>
       <PaginatedTable
@@ -35,21 +60,11 @@ export const MembersPage = () => {
         total={status.result?.total}
         fetchFunc={fetchFunc}
       >
-        {status.isLoading() ? <TableLoading /> : null}
-        {status.isErrors() ? (
+        {status.isLoading() && <TableLoading>{rows}</TableLoading>}
+        {status.isErrors() && (
           <TableErrors errors={status.errors} columnCount={3} />
-        ) : null}
-        {status.isResult()
-          ? status.result.items.map((member: Member) => (
-              <TableRow key={member.id}>
-                <TableCell component="th" scope="row">
-                  {member.name}
-                </TableCell>
-                <TableCell>{member.nif}</TableCell>
-                <TableCell>{member.joined_on}</TableCell>
-              </TableRow>
-            ))
-          : null}
+        )}
+        {status.isResult() && rows}
       </PaginatedTable>
     </Layout>
   );

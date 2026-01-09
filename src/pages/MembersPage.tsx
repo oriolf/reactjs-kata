@@ -28,14 +28,15 @@ export const MembersPage = () => {
   );
   const { get } = useHttp();
   const { sendAlert } = useAlerts();
-  const fetchFunc = (page: number, itemsPerPage: number) => {
+  const fetchFunc = (page: number, itemsPerPage: number, filter: string) => {
     const params = new URLSearchParams({
       page: page + "",
       itemsPerPage: itemsPerPage + "",
+      search: filter,
     });
     setStatus(status.setLoading(true));
     get<ListResponse<Member>>("api/members?" + params.toString())
-      //.then((data) => setStatus(status.setResult(data)))
+      .then((data) => setStatus(status.setResult(data)))
       .catch((err: ApiError) => setStatus(status.setErrors(err, sendAlert)));
   };
   const translateMsgTitle = "Membres";
@@ -56,6 +57,7 @@ export const MembersPage = () => {
   return (
     <Layout title={translateMsgTitle}>
       <PaginatedTable
+        title={translateMsgTitle}
         headers={translateMsgHeaders}
         total={status.result?.total}
         fetchFunc={fetchFunc}

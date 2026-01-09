@@ -1,4 +1,5 @@
 import {
+  InputAdornment,
   Paper,
   Table,
   TableBody,
@@ -8,11 +9,14 @@ import {
   TableHead,
   TablePagination,
   TableRow,
+  TextField,
   Toolbar,
   Typography,
 } from "@mui/material";
 import { ChangeEvent, useEffect, useState } from "react";
 import type { TableHeader } from "../api/types";
+import SearchIcon from "@mui/icons-material/Search";
+import { debounce } from "../utils";
 
 export default function PaginatedTable({
   title,
@@ -25,11 +29,12 @@ export default function PaginatedTable({
   headers: TableHeader[];
   children: any;
   total?: number;
-  fetchFunc: (page: number, itemsPerPage: number) => void;
+  fetchFunc: (page: number, itemsPerPage: number, filter: string) => void;
 }) {
-  const defaultPerPage = 2;
+  const defaultPerPage = 10;
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(defaultPerPage);
+  const [filter, setFilter] = useState("");
   const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
@@ -37,9 +42,12 @@ export default function PaginatedTable({
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };
+  const handleFilter = (event: ChangeEvent<HTMLInputElement>) => {
+    setFilter(event.target.value);
+  };
   useEffect(() => {
-    fetchFunc(page, rowsPerPage);
-  }, [page, rowsPerPage]);
+    fetchFunc(page, rowsPerPage, filter);
+  }, [page, rowsPerPage, filter]);
   return (
     <Paper>
       {title && (
@@ -47,6 +55,20 @@ export default function PaginatedTable({
           <Typography sx={{ flex: "1 1 100%" }} variant="h6">
             {title}
           </Typography>
+          <TextField
+            margin="dense"
+            size="small"
+            onInput={debounce(handleFilter, 250)}
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon />
+                  </InputAdornment>
+                ),
+              },
+            }}
+          />
         </Toolbar>
       )}
       <TableContainer>

@@ -14,3 +14,14 @@ export function sendAlerts(
     }
   }
 }
+
+export function debounce(
+  f: (x: any) => void,
+  timeout: number
+): (x: any) => void {
+  let timer: number;
+  return (x: any) => {
+    clearInterval(timer);
+    timer = setTimeout(() => f(x), timeout);
+  };
+}

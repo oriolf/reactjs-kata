@@ -5,6 +5,7 @@ import { AuthProvider } from "./hooks/useAuth";
 import { LoginPage } from "./pages/LoginPage";
 import { HomePage } from "./pages/HomePage";
 import { MembersPage } from "./pages/MembersPage";
+import { ProfilePage } from "./pages/ProfilePage";
 import { ProtectedRoute } from "./ProtectedRoute";
 import "./App.css";
 import { AlertMessage } from "./api/types";
@@ -74,6 +75,14 @@ export function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <ProfilePage />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/members"
             element={

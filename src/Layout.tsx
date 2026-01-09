@@ -16,6 +16,7 @@ import HomeIcon from "@mui/icons-material/Home";
 import LoginIcon from "@mui/icons-material/Login";
 import LogoutIcon from "@mui/icons-material/Logout";
 import PeopleIcon from "@mui/icons-material/People";
+import PersonIcon from "@mui/icons-material/Person";
 import { Link } from "react-router";
 import { useAuth } from "./hooks/useAuth";
 import { useLocalStorage } from "./hooks/useLocalStorage";
@@ -81,11 +82,12 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   justifyContent: "flex-end",
 }));
 
-const translateMsgs = ["Inici", "Inicia sessió", "Membres"];
+const translateMsgs = ["Inici", "Inicia sessió", "Membres", "Perfil"];
 const allMenuItems: { label: string; href: string; icon: any }[] = [
   { label: translateMsgs[0], href: "/", icon: <HomeIcon /> },
   { label: translateMsgs[1], href: "/login", icon: <LoginIcon /> },
   { label: translateMsgs[2], href: "/members", icon: <PeopleIcon /> },
+  { label: translateMsgs[3], href: "/profile", icon: <PersonIcon /> },
 ];
 
 export default function Layout({
@@ -109,7 +111,7 @@ export default function Layout({
   const { user, logout } = useAuth();
   let menuItems = [allMenuItems[0], allMenuItems[1]];
   if (user) {
-    menuItems = [allMenuItems[0], allMenuItems[2]];
+    menuItems = [allMenuItems[0], allMenuItems[2], allMenuItems[3]];
   }
   return (
     <Box sx={{ display: "flex" }}>

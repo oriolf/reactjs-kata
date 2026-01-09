@@ -25,3 +25,7 @@ export function debounce(
     timer = setTimeout(() => f(x), timeout);
   };
 }
+
+export function formatDatetime(s: string): string {
+  return new Date(s).toLocaleString();
+}

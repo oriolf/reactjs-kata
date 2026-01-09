@@ -24,12 +24,16 @@ export default function PaginatedTable({
   children,
   total,
   fetchFunc,
+  paginate = true,
+  showFilter = true,
 }: {
   title?: string;
   headers: TableHeader[];
   children: any;
   total?: number;
   fetchFunc: (page: number, itemsPerPage: number, filter: string) => void;
+  paginate?: boolean;
+  showFilter?: boolean;
 }) {
   const defaultPerPage = 10;
   const [page, setPage] = useState(0);
@@ -55,20 +59,22 @@ export default function PaginatedTable({
           <Typography sx={{ flex: "1 1 100%" }} variant="h6">
             {title}
           </Typography>
-          <TextField
-            margin="dense"
-            size="small"
-            onInput={debounce(handleFilter, 250)}
-            slotProps={{
-              input: {
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon />
-                  </InputAdornment>
-                ),
-              },
-            }}
-          />
+          {showFilter && (
+            <TextField
+              margin="dense"
+              size="small"
+              onInput={debounce(handleFilter, 250)}
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon />
+                    </InputAdornment>
+                  ),
+                },
+              }}
+            />
+          )}
         </Toolbar>
       )}
       <TableContainer>
@@ -83,18 +89,20 @@ export default function PaginatedTable({
             </TableRow>
           </TableHead>
           <TableBody style={{ position: "relative" }}>{children}</TableBody>
-          <TableFooter>
-            <TableRow>
-              <TablePagination
-                rowsPerPageOptions={[defaultPerPage, 25, 100]}
-                count={total || 0}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-              />
-            </TableRow>
-          </TableFooter>
+          {paginate && (
+            <TableFooter>
+              <TableRow>
+                <TablePagination
+                  rowsPerPageOptions={[defaultPerPage, 25, 100]}
+                  count={total || 0}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  onPageChange={handleChangePage}
+                  onRowsPerPageChange={handleChangeRowsPerPage}
+                />
+              </TableRow>
+            </TableFooter>
+          )}
         </Table>
       </TableContainer>
     </Paper>

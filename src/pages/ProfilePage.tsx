@@ -1,16 +1,17 @@
 import { useState } from "react";
 import { ApiError, useHttp } from "../hooks/useHttp";
-import { TableCell, TableRow } from "@mui/material";
+import { IconButton, TableCell, TableRow } from "@mui/material";
 import PaginatedTable from "../components/PaginatedTable";
 import Layout from "../Layout";
 import { useAlerts } from "../App";
 
-import { ApiCallStatus, LoadingStatus } from "../api/types";
+import { ApiCallStatus, JsonOk, LoadingStatus } from "../api/types";
 import type { User } from "../api/User";
 import type { Session } from "../api/Session";
 import TableErrors from "../components/TableErrors";
 import TableLoading from "../components/TableLoading";
 import { formatDatetime } from "../utils";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 export const ProfilePage = () => {
   const [status, setStatus] = useState<ApiCallStatus<User>>(
@@ -29,8 +30,11 @@ export const ProfilePage = () => {
       ],
     })
   );
-  const { get } = useHttp();
+  const { get, doDelete } = useHttp();
   const { sendAlert } = useAlerts();
+  const deleteSession = (id: string) => {
+    doDelete<JsonOk>("api/sessions/" + id).then(() => fetchFunc(0, 0, ""));
+  };
   const fetchFunc = (page: number, itemsPerPage: number, filter: string) => {
     setStatus(status.setLoading(true));
     get<User>("api/me")
@@ -44,6 +48,7 @@ export const ProfilePage = () => {
     { key: 2, label: "Agent", width: 50 },
     { key: 3, label: "Iniciada", width: 15 },
     { key: 4, label: "Caduca", width: 15 },
+    { key: 5, label: "Esborra", width: 10 },
   ];
   const rows = status.result?.sessions.map((session: Session) => (
     <TableRow key={session.id}>
@@ -53,6 +58,11 @@ export const ProfilePage = () => {
       <TableCell width="60%">{session.agent}</TableCell>
       <TableCell width="15%">{formatDatetime(session.time)}</TableCell>
       <TableCell width="15%">{formatDatetime(session.expires)}</TableCell>
+      <TableCell width="10%">
+        <IconButton onClick={() => deleteSession(session.id)}>
+          <DeleteIcon />
+        </IconButton>
+      </TableCell>
     </TableRow>
   ));
   return (

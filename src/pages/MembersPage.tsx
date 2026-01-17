@@ -83,13 +83,13 @@ export const MembersPage = () => {
         component="th"
         scope="row"
         width="45%"
-        fieldName="name"
+        name="name"
         currentValue={member.name}
         updateFunc={patchMember(member.id, "name")}
       />
       <EditableCell
         width="25%"
-        fieldName="nif"
+        name="nif"
         currentValue={member.nif}
         updateFunc={patchMember(member.id, "nif")}
       />

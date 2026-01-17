@@ -9,14 +9,14 @@ import EditIcon from "@mui/icons-material/Edit";
 import { EditingStatus, IdleEditingStatus } from "../api/types";
 
 export default function EditableCell({
-  fieldName,
+  name,
   component,
   scope,
   width,
   currentValue,
   updateFunc,
 }: {
-  fieldName: string;
+  name: string;
   component?: any;
   scope?: any;
   width: any;
@@ -24,25 +24,25 @@ export default function EditableCell({
   updateFunc: (x: string) => Promise<void>;
 }) {
   const [status, setStatus] = useState<EditingStatus>(IdleEditingStatus());
-  const [name, setName] = useState("");
+  const [value, setValue] = useState(currentValue);
   const [over, setOver] = useState(false);
   const handleClick = () => {
     if (!status.isActive()) setStatus(status.setEditing(true));
   };
   const handleSubmit = () => {
     setStatus(status.setLoading());
-    return updateFunc(name).catch((err) => setStatus(status.setErrors(err)));
+    return updateFunc(value).catch((err) => setStatus(status.setErrors(err)));
   };
   const handleKeyUp = (event: any) => {
     if (event.key === "Enter") handleSubmit();
     if (event.key === "Escape") setStatus(IdleEditingStatus());
   };
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setName(event.target.value);
+    setValue(event.target.value);
   };
   const input = (
     <TextField
-      name={fieldName}
+      name={name}
       margin="dense"
       size="small"
       fullWidth={true}
@@ -51,8 +51,8 @@ export default function EditableCell({
       onKeyUp={handleKeyUp}
       onChange={handleChange}
       autoFocus={true}
-      error={status.hasError(fieldName)}
-      helperText={status.errorText(fieldName)}
+      error={status.hasError(name)}
+      helperText={status.errorText(name)}
       slotProps={{
         input: {
           endAdornment: status.isLoading() && (

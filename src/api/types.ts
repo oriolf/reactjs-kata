@@ -114,3 +114,74 @@ export type ApiCallResultStatus<T> = {
 export type ApiCallErrorsStatus<T> = {
   errors: T;
 };
+
+export function IdleEditingStatus(): EditingStatus {
+  return new EditingStatus(false, false);
+}
+
+export class EditingStatus {
+  editing: boolean;
+  loading: boolean;
+  errors?: JsonError;
+
+  constructor(editing: boolean, loading: boolean, errors?: JsonError) {
+    this.editing = editing;
+    this.loading = loading;
+    this.errors = errors;
+  }
+
+  isIdle(): this is EditingIdleStatus {
+    return !this.editing && !this.loading && !this.errors;
+  }
+
+  isActive(): boolean {
+    return this.editing || this.loading || !!this.errors;
+  }
+
+  isEditing(): this is EditingActiveStatus {
+    return this.editing && !this.loading && !this.errors;
+  }
+
+  isLoading(): this is ApiCallLoadingStatus {
+    return this.loading;
+  }
+
+  isErrors(): this is EditingErrorStatus {
+    return this.errors !== undefined;
+  }
+
+  setEditing(editing: boolean): EditingStatus {
+    return new EditingStatus(editing, false, undefined);
+  }
+
+  setLoading(): EditingStatus {
+    return new EditingStatus(this.editing, true, undefined);
+  }
+
+  setErrors(errors: JsonError): EditingStatus {
+    return new EditingStatus(this.editing, false, errors);
+  }
+
+  hasError(key: string): boolean {
+    return (
+      !!this.errors &&
+      this.errors.errors[key] &&
+      this.errors.errors[key].length > 0
+    );
+  }
+
+  errorText(key: string): string | undefined {
+    if (!this.hasError(key)) {
+      return;
+    }
+
+    return this.errors?.errors[key][0];
+  }
+}
+
+export type EditingIdleStatus = { editing: false };
+export type EditingActiveStatus = { editing: true };
+
+export type EditingErrorStatus = {
+  errors: JsonError;
+};

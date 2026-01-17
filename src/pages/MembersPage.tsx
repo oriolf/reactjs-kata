@@ -5,12 +5,23 @@ import PaginatedTable from "../components/PaginatedTable";
 import Layout from "../Layout";
 import { useAlerts } from "../App";
 
-import { ApiCallStatus, LoadingStatus, type ListResponse } from "../api/types";
+import {
+  ApiCallStatus,
+  JsonOk,
+  LoadingStatus,
+  type ListResponse,
+} from "../api/types";
 import type { Member } from "../api/Member";
 import TableErrors from "../components/TableErrors";
 import TableLoading from "../components/TableLoading";
+import EditableCell from "../components/EditableCell";
 
 export const MembersPage = () => {
+  const [fetchParams, setFetchParams] = useState<[number, number, string]>([
+    0,
+    10,
+    "",
+  ]);
   const [status, setStatus] = useState<ApiCallStatus<ListResponse<Member>>>(
     LoadingStatus(true, {
       total: 0,
@@ -26,9 +37,10 @@ export const MembersPage = () => {
       ],
     })
   );
-  const { get } = useHttp();
+  const { get, patch } = useHttp();
   const { sendAlert } = useAlerts();
   const fetchFunc = (page: number, itemsPerPage: number, filter: string) => {
+    setFetchParams([page, itemsPerPage, filter]);
     const params = new URLSearchParams({
       page: page + "",
       itemsPerPage: itemsPerPage + "",
@@ -39,6 +51,17 @@ export const MembersPage = () => {
       .then((data) => setStatus(status.setResult(data)))
       .catch((err: ApiError) => setStatus(status.setErrors(err, sendAlert)));
   };
+  const patchMember = (
+    id: number,
+    field: string
+  ): ((x: string) => Promise<void>) => {
+    return (value: string): Promise<void> => {
+      return patch<JsonOk>("api/members/" + id, { [field]: value }).then(() => {
+        const [page, itemsPerPage, filter] = fetchParams;
+        return fetchFunc(page, itemsPerPage, filter);
+      });
+    };
+  };
   const translateMsgTitle = "Membres";
   const translateMsgHeaders = [
     { key: 1, label: "Nom", width: 50 },
@@ -47,10 +70,20 @@ export const MembersPage = () => {
   ];
   const rows = status.result?.items.map((member: Member) => (
     <TableRow key={member.id}>
-      <TableCell component="th" scope="row" width="50%">
-        {member.name}
-      </TableCell>
-      <TableCell width="25%">{member.nif}</TableCell>
+      <EditableCell
+        component="th"
+        scope="row"
+        width="50%"
+        fieldName="name"
+        currentValue={member.name}
+        updateFunc={patchMember(member.id, "name")}
+      />
+      <EditableCell
+        width="25%"
+        fieldName="nif"
+        currentValue={member.nif}
+        updateFunc={patchMember(member.id, "nif")}
+      />
       <TableCell width="25%">{member.joined_on}</TableCell>
     </TableRow>
   ));

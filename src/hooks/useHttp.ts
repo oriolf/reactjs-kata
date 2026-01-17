@@ -40,6 +40,16 @@ export const useHttp = () => {
     return await result(res);
   }
 
+  async function patch<T>(url: string, body: any): Promise<T> {
+    const res = await fetch(BASE_URL + url, {
+      method: "PATCH",
+      credentials: "include",
+      body: JSON.stringify(body),
+    });
+
+    return await result(res);
+  }
+
   async function doDelete<T>(url: string): Promise<T> {
     const res = await fetch(BASE_URL + url, {
       method: "DELETE",
@@ -57,5 +67,5 @@ export const useHttp = () => {
     return await result(res);
   }
 
-  return { get, post, doDelete };
+  return { get, post, patch, doDelete };
 };

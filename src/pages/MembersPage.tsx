@@ -15,6 +15,7 @@ import type { Member } from "../api/Member";
 import TableErrors from "../components/TableErrors";
 import TableLoading from "../components/TableLoading";
 import EditableCell from "../components/EditableCell";
+import DeleteButton from "../components/DeleteButton";
 
 export const MembersPage = () => {
   const [fetchParams, setFetchParams] = useState<[number, number, string]>([
@@ -37,7 +38,7 @@ export const MembersPage = () => {
       ],
     })
   );
-  const { get, patch } = useHttp();
+  const { get, patch, doDelete } = useHttp();
   const { sendAlert } = useAlerts();
   const fetchFunc = (page: number, itemsPerPage: number, filter: string) => {
     setFetchParams([page, itemsPerPage, filter]);
@@ -62,18 +63,26 @@ export const MembersPage = () => {
       });
     };
   };
+  const deleteMember = (id: number): Promise<void> => {
+    console.log("Deleting member", id);
+    return doDelete("api/members/" + id).then(() => {
+      const [page, itemsPerPage, filter] = fetchParams;
+      return fetchFunc(page, itemsPerPage, filter);
+    });
+  };
   const translateMsgTitle = "Membres";
   const translateMsgHeaders = [
-    { key: 1, label: "Nom", width: 50 },
+    { key: 1, label: "Nom", width: 45 },
     { key: 2, label: "NIF", width: 25 },
     { key: 3, label: "Soci/a des de", width: 25 },
+    { key: 4, label: "Acció", width: 5 },
   ];
   const rows = status.result?.items.map((member: Member) => (
     <TableRow key={member.id}>
       <EditableCell
         component="th"
         scope="row"
-        width="50%"
+        width="45%"
         fieldName="name"
         currentValue={member.name}
         updateFunc={patchMember(member.id, "name")}
@@ -85,6 +94,9 @@ export const MembersPage = () => {
         updateFunc={patchMember(member.id, "nif")}
       />
       <TableCell width="25%">{member.joined_on}</TableCell>
+      <TableCell width="5%">
+        <DeleteButton deleteFunc={() => deleteMember(member.id)} />
+      </TableCell>
     </TableRow>
   ));
   return (

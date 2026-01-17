@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ApiError, useHttp } from "../hooks/useHttp";
-import { IconButton, TableCell, TableRow } from "@mui/material";
+import { TableCell, TableRow } from "@mui/material";
 import PaginatedTable from "../components/PaginatedTable";
 import Layout from "../Layout";
 import { useAlerts } from "../App";
@@ -11,7 +11,7 @@ import type { Session } from "../api/Session";
 import TableErrors from "../components/TableErrors";
 import TableLoading from "../components/TableLoading";
 import { formatDatetime } from "../utils";
-import DeleteIcon from "@mui/icons-material/Delete";
+import DeleteButton from "../components/DeleteButton";
 
 export const ProfilePage = () => {
   const [status, setStatus] = useState<ApiCallStatus<User>>(
@@ -32,8 +32,10 @@ export const ProfilePage = () => {
   );
   const { get, doDelete } = useHttp();
   const { sendAlert } = useAlerts();
-  const deleteSession = (id: string) => {
-    doDelete<JsonOk>("api/sessions/" + id).then(() => fetchFunc(0, 0, ""));
+  const deleteSession = (id: string): Promise<void> => {
+    return doDelete<JsonOk>("api/sessions/" + id).then(() =>
+      fetchFunc(0, 0, "")
+    );
   };
   const fetchFunc = (page: number, itemsPerPage: number, filter: string) => {
     setStatus(status.setLoading(true));
@@ -59,9 +61,7 @@ export const ProfilePage = () => {
       <TableCell width="15%">{formatDatetime(session.time)}</TableCell>
       <TableCell width="15%">{formatDatetime(session.expires)}</TableCell>
       <TableCell width="10%">
-        <IconButton onClick={() => deleteSession(session.id)}>
-          <DeleteIcon />
-        </IconButton>
+        <DeleteButton deleteFunc={() => deleteSession(session.id)} />
       </TableCell>
     </TableRow>
   ));

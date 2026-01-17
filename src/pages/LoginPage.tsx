@@ -1,4 +1,12 @@
-import { Box, Button, Container, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Container,
+  IconButton,
+  InputAdornment,
+  TextField,
+  Typography,
+} from "@mui/material";
 import Layout from "../Layout";
 import { ApiError, useHttp } from "../hooks/useHttp";
 import { useAuth } from "../hooks/useAuth";
@@ -7,8 +15,10 @@ import type { User } from "../api/User";
 import { useAlerts } from "../App";
 import { useState } from "react";
 import LoginIcon from "@mui/icons-material/Login";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 export const LoginPage = () => {
+  const [showPassword, setShowPassword] = useState(false);
   const { login } = useAuth();
   const { get, post } = useHttp();
   const { sendAlert } = useAlerts();
@@ -67,11 +77,24 @@ export const LoginPage = () => {
               fullWidth
               name="password"
               label="Contrasenya"
-              type="password"
+              type={showPassword ? "text" : "password"}
               id="password"
               autoComplete="current-password"
               error={status.hasError("password")}
               helperText={status.errorText("password")}
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={() => setShowPassword(!showPassword)}
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                },
+              }}
             />
             <Button
               type="submit"

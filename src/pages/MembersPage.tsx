@@ -16,6 +16,7 @@ import TableErrors from "../components/TableErrors";
 import TableLoading from "../components/TableLoading";
 import EditableCell from "../components/EditableCell";
 import DeleteButton from "../components/DeleteButton";
+import AddMemberRow from "../components/AddMemberRow";
 
 export const MembersPage = () => {
   const [fetchParams, setFetchParams] = useState<[number, number, string]>([
@@ -42,6 +43,15 @@ export const MembersPage = () => {
   const { sendAlert } = useAlerts();
   const fetchFunc = (page: number, itemsPerPage: number, filter: string) => {
     setFetchParams([page, itemsPerPage, filter]);
+    return fetchFuncAux(page, itemsPerPage, filter);
+  };
+
+  const fetchCurrent = () => {
+    const [page, itemsPerPage, filter] = fetchParams;
+    return fetchFuncAux(page, itemsPerPage, filter);
+  };
+
+  const fetchFuncAux = (page: number, itemsPerPage: number, filter: string) => {
     const params = new URLSearchParams({
       page: page + "",
       itemsPerPage: itemsPerPage + "",
@@ -52,24 +62,24 @@ export const MembersPage = () => {
       .then((data) => setStatus(status.setResult(data)))
       .catch((err: ApiError) => setStatus(status.setErrors(err, sendAlert)));
   };
+
   const patchMember = (
     id: number,
     field: string
   ): ((x: string) => Promise<void>) => {
     return (value: string): Promise<void> => {
       return patch<JsonOk>("api/members/" + id, { [field]: value }).then(() => {
-        const [page, itemsPerPage, filter] = fetchParams;
-        return fetchFunc(page, itemsPerPage, filter);
+        return fetchCurrent();
       });
     };
   };
+
   const deleteMember = (id: number): Promise<void> => {
-    console.log("Deleting member", id);
     return doDelete("api/members/" + id).then(() => {
-      const [page, itemsPerPage, filter] = fetchParams;
-      return fetchFunc(page, itemsPerPage, filter);
+      return fetchCurrent();
     });
   };
+
   const translateMsgTitle = "Membres";
   const translateMsgHeaders = [
     { key: 1, label: "Nom", width: 45 },
@@ -99,6 +109,7 @@ export const MembersPage = () => {
       </TableCell>
     </TableRow>
   ));
+  rows?.push(<AddMemberRow key={-1} fetchFunc={fetchCurrent} />);
   return (
     <Layout title={translateMsgTitle}>
       <PaginatedTable
@@ -109,7 +120,10 @@ export const MembersPage = () => {
       >
         {status.isLoading() && <TableLoading>{rows}</TableLoading>}
         {status.isErrors() && (
-          <TableErrors errors={status.errors} columnCount={3} />
+          <TableErrors
+            errors={status.errors}
+            columnCount={translateMsgHeaders.length}
+          />
         )}
         {status.isResult() && rows}
       </PaginatedTable>

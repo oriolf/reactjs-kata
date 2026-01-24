@@ -139,7 +139,7 @@ export class EditingStatus {
   }
 
   isEditing(): this is EditingActiveStatus {
-    return this.editing && !this.loading && !this.errors;
+    return this.editing && !this.loading;
   }
 
   isLoading(): this is ApiCallLoadingStatus {
@@ -160,6 +160,10 @@ export class EditingStatus {
 
   setErrors(errors: JsonError): EditingStatus {
     return new EditingStatus(this.editing, false, errors);
+  }
+
+  clearErrors(): EditingStatus {
+    return new EditingStatus(this.editing, false, { errors: {} });
   }
 
   hasError(key: string): boolean {

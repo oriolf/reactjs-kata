@@ -1,15 +1,17 @@
 import { Add } from "@mui/icons-material";
-import { Button, TableCell, TableRow } from "@mui/material";
+import { Button, IconButton, TableCell, TableRow } from "@mui/material";
 import { useState } from "react";
 import { EditingStatus, IdleEditingStatus, JsonOk } from "../api/types";
 import { ApiError, useHttp } from "../hooks/useHttp";
+import { sendAlerts } from "../utils";
 import RowField from "./RowField";
-import AddButton from "./AddButton";
+import { useAlerts } from "../App";
 
 export default function AddMemberRow({ fetchFunc }: { fetchFunc: () => void }) {
   const [status, setStatus] = useState<EditingStatus>(IdleEditingStatus());
-  const [values, setValues] = useState({ name: "", nif: "", joined_on: "" });
+  const [values, setValues] = useState({});
   const { post, query } = useHttp();
+  const { sendAlert } = useAlerts();
   const translateMsgAdd = "Afegeix";
 
   const changeFunc = (newValue: any) => setValues({ ...values, ...newValue });
@@ -17,13 +19,28 @@ export default function AddMemberRow({ fetchFunc }: { fetchFunc: () => void }) {
   const queryValidity = () => {
     query<JsonOk>("api/members", values)
       .then(() => setStatus(status.clearErrors()))
-      .catch((err: ApiError) => setStatus(status.setErrors(err)));
+      .catch((err: ApiError) => {
+        let errors: { [key: string]: string[] } = {};
+        for (var k in err.errors) {
+          if (k in values) {
+            errors[k] = err.errors[k];
+          }
+        }
+        setStatus(status.setErrors({ errors: errors }));
+      });
   };
 
   const add = (): Promise<void> => {
+    setStatus(status.setLoading());
     return post<JsonOk>("api/members", values)
-      .then(() => fetchFunc())
-      .catch((err: ApiError) => setStatus(status.setErrors(err)));
+      .then(() => {
+        setStatus(IdleEditingStatus());
+        fetchFunc();
+      })
+      .catch((err: ApiError) => {
+        setStatus(status.setErrors(err));
+        sendAlerts(sendAlert, err);
+      });
   };
 
   if (!status.isEditing()) {
@@ -73,7 +90,9 @@ export default function AddMemberRow({ fetchFunc }: { fetchFunc: () => void }) {
         />
       </TableCell>
       <TableCell>
-        <AddButton addFunc={add} />
+        <IconButton onClick={add} loading={status.isLoading()}>
+          <Add />
+        </IconButton>
       </TableCell>
     </TableRow>
   );

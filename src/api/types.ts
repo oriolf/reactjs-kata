@@ -139,7 +139,7 @@ export class EditingStatus {
   }
 
   isEditing(): this is EditingActiveStatus {
-    return this.editing && !this.loading;
+    return this.editing;
   }
 
   isLoading(): this is ApiCallLoadingStatus {

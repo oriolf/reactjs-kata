@@ -1,5 +1,5 @@
 import { Delete } from "@mui/icons-material";
-import { CircularProgress, IconButton } from "@mui/material";
+import { IconButton } from "@mui/material";
 import { useState } from "react";
 import { EditingStatus, IdleEditingStatus } from "../api/types";
 import { sendAlerts } from "../utils";
@@ -24,8 +24,8 @@ export default function DeleteButton({
     }
   };
   return (
-    <IconButton onClick={handleDelete}>
-      {status.isLoading() ? <CircularProgress size="24px" /> : <Delete />}
+    <IconButton onClick={handleDelete} loading={status.isLoading()}>
+      <Delete />
     </IconButton>
   );
 }

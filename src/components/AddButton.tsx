@@ -1,5 +1,5 @@
 import { Add } from "@mui/icons-material";
-import { CircularProgress, IconButton } from "@mui/material";
+import { IconButton } from "@mui/material";
 import { useState } from "react";
 import { EditingStatus, IdleEditingStatus } from "../api/types";
 import { sendAlerts } from "../utils";
@@ -20,8 +20,8 @@ export default function AddButton({
     });
   };
   return (
-    <IconButton onClick={handleAdd}>
-      {status.isLoading() ? <CircularProgress size="24px" /> : <Add />}
+    <IconButton onClick={handleAdd} loading={status.isLoading()}>
+      <Add />
     </IconButton>
   );
 }

@@ -1,4 +1,4 @@
-import { Add } from "@mui/icons-material";
+import { Add, Upload } from "@mui/icons-material";
 import { Button, IconButton, TableCell, TableRow } from "@mui/material";
 import { useState } from "react";
 import { EditingStatus, IdleEditingStatus, JsonOk } from "../api/types";
@@ -6,13 +6,16 @@ import { ApiError, useHttp } from "../hooks/useHttp";
 import { sendAlerts } from "../utils";
 import RowField from "./RowField";
 import { useAlerts } from "../App";
+import ImportMembersDialog from "./ImportMembersDialog";
 
 export default function AddMemberRow({ fetchFunc }: { fetchFunc: () => void }) {
   const [status, setStatus] = useState<EditingStatus>(IdleEditingStatus());
   const [values, setValues] = useState({});
+  const [importing, setImporting] = useState(false);
   const { post, query } = useHttp();
   const { sendAlert } = useAlerts();
   const translateMsgAdd = "Afegeix";
+  const translateMsgImport = "Importa";
 
   const changeFunc = (newValue: any) => setValues({ ...values, ...newValue });
 
@@ -48,7 +51,6 @@ export default function AddMemberRow({ fetchFunc }: { fetchFunc: () => void }) {
       <TableRow>
         <TableCell colSpan={4} padding="none">
           <Button
-            type="submit"
             variant="contained"
             sx={{ ml: 1, mt: 1, mb: 1 }}
             endIcon={<Add />}
@@ -56,6 +58,24 @@ export default function AddMemberRow({ fetchFunc }: { fetchFunc: () => void }) {
           >
             {translateMsgAdd}
           </Button>
+          <Button
+            variant="contained"
+            color="success"
+            sx={{ ml: 1, mt: 1, mb: 1 }}
+            endIcon={<Upload />}
+            onClick={() => setImporting(true)}
+          >
+            {translateMsgImport}
+          </Button>
+          {importing && (
+            <ImportMembersDialog
+              open={importing}
+              closeFunc={() => {
+                setImporting(false);
+                fetchFunc();
+              }}
+            />
+          )}
         </TableCell>
       </TableRow>
     );

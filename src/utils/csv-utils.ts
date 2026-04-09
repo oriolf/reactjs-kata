@@ -1,6 +1,9 @@
-// TODO look up mdn FileReader
 export function parseCsv(contents: string): string[][] {
-  return contents.split("\n").map((line) => parseCsvLine(line));
+  return contents
+    .split("\n")
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0)
+    .map((line) => parseCsvLine(line));
 }
 
 export function parseCsvLine(
@@ -25,7 +28,6 @@ function parseCsvField(
   quotationChar: string = '"',
   separator: string = ","
 ): [string, number] {
-  let i = index;
   if (line[index] === quotationChar) {
     return parseCsvQuotedField(line, index, quotationChar);
   }

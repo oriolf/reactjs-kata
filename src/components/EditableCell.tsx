@@ -4,7 +4,7 @@ import {
   TableCell,
   TextField,
 } from "@mui/material";
-import { ChangeEvent, useState } from "react";
+import { useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import { EditingStatus, IdleEditingStatus } from "../api/types";
 
@@ -35,9 +35,12 @@ export default function EditableCell({
   };
   const handleKeyUp = (event: any) => {
     if (event.key === "Enter") handleSubmit();
-    if (event.key === "Escape") setStatus(IdleEditingStatus());
+    if (event.key === "Escape") {
+      setStatus(IdleEditingStatus());
+      setValue(currentValue);
+    }
   };
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (event: any) => {
     setValue(event.target.value);
   };
   const input = (

@@ -59,7 +59,7 @@ export class ApiCallStatus<T> {
     );
   }
 
-  isErrors(): this is ApiCallErrorsStatus<T> {
+  isErrors(): this is ApiCallErrorsStatus {
     return this.errors !== undefined;
   }
 
@@ -73,9 +73,11 @@ export class ApiCallStatus<T> {
 
   setErrors(
     errors: JsonError,
-    alertFunc: (msg: AlertMessage) => void
+    alertFunc?: (msg: AlertMessage) => void
   ): ApiCallStatus<T> {
-    sendAlerts(alertFunc, errors);
+    if (alertFunc) {
+      sendAlerts(alertFunc, errors);
+    }
 
     return new ApiCallStatus<T>(false, this.result, errors);
   }
@@ -111,8 +113,8 @@ export type ApiCallResultStatus<T> = {
   result: T;
 };
 
-export type ApiCallErrorsStatus<T> = {
-  errors: T;
+export type ApiCallErrorsStatus = {
+  errors: JsonError;
 };
 
 export function IdleEditingStatus(): EditingStatus {
@@ -167,19 +169,21 @@ export class EditingStatus {
   }
 
   hasError(key: string): boolean {
+    const e = this.errors;
     return (
-      !!this.errors &&
-      this.errors.errors[key] &&
-      this.errors.errors[key].length > 0
+      !!e &&
+      ((e.errors[key] && e.errors[key].length > 0) ||
+        (e.errors["__form__"] && e.errors["__form__"].length > 0))
     );
   }
 
   errorText(key: string): string | undefined {
-    if (!this.hasError(key)) {
+    if (!this.isErrors() || !this.hasError(key)) {
       return;
     }
 
-    return this.errors?.errors[key][0];
+    let errs = this.errors?.errors;
+    return errs[key] ? errs[key][0] : errs["__form__"][0];
   }
 }
 

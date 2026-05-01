@@ -33,11 +33,9 @@ export const ProfilePage = () => {
   const { get, doDelete } = useHttp();
   const { sendAlert } = useAlerts();
   const deleteSession = (id: string): Promise<void> => {
-    return doDelete<JsonOk>("api/sessions/" + id).then(() =>
-      fetchFunc(0, 0, "")
-    );
+    return doDelete<JsonOk>("api/sessions/" + id).then(() => fetchFunc());
   };
-  const fetchFunc = (page: number, itemsPerPage: number, filter: string) => {
+  const fetchFunc = () => {
     setStatus(status.setLoading(true));
     get<User>("api/me")
       .then((data) => setStatus(status.setResult(data)))

@@ -18,7 +18,6 @@ test("parseCsvLine", () => {
   ];
   for (let [input, expected] of testCases) {
     let got = parseCsvLine(input);
-    console.log("GOT", got);
     expect(JSON.stringify(got)).toBe(JSON.stringify(expected));
   }
 });

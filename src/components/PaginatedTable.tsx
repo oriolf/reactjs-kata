@@ -43,7 +43,7 @@ export default function PaginatedTable({
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-  const handleChangePage = (event: unknown, newPage: number) => {
+  const handleChangePage = (_: unknown, newPage: number) => {
     setPage(newPage);
   };
   const handleFilter = (event: ChangeEvent<HTMLInputElement>) => {

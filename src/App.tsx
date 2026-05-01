@@ -11,7 +11,7 @@ import "./App.css";
 import { AlertMessage } from "./api/types";
 
 const AlertsContext = createContext({
-  sendAlert: (msg: AlertMessage): void => {},
+  sendAlert: (_: AlertMessage): void => {},
 });
 
 export function NewAlertMessage(
@@ -55,7 +55,7 @@ export function App() {
   }, [snackPack, messageInfo, openSnackbar]);
 
   const handleCloseSnackbar = (
-    event?: React.SyntheticEvent | Event,
+    _?: React.SyntheticEvent | Event,
     reason?: SnackbarCloseReason
   ) => {
     if (reason !== "clickaway") {

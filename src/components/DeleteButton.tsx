@@ -7,8 +7,10 @@ import { useAlerts } from "../App";
 
 export default function DeleteButton({
   deleteFunc,
+  dataTestId,
 }: {
   deleteFunc: () => Promise<void>;
+  dataTestId?: string;
 }) {
   const { sendAlert } = useAlerts();
   const [status, setStatus] = useState<EditingStatus>(IdleEditingStatus());
@@ -24,7 +26,11 @@ export default function DeleteButton({
     }
   };
   return (
-    <IconButton onClick={handleDelete} loading={status.isLoading()}>
+    <IconButton
+      onClick={handleDelete}
+      loading={status.isLoading()}
+      data-testid={dataTestId}
+    >
       <Delete />
     </IconButton>
   );

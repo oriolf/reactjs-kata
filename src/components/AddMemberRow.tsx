@@ -55,6 +55,7 @@ export default function AddMemberRow({ fetchFunc }: { fetchFunc: () => void }) {
             sx={{ ml: 1, mt: 1, mb: 1 }}
             endIcon={<Add />}
             onClick={() => setStatus(status.setEditing(true))}
+            data-testid="members-add-open"
           >
             {translateMsgAdd}
           </Button>
@@ -64,6 +65,7 @@ export default function AddMemberRow({ fetchFunc }: { fetchFunc: () => void }) {
             sx={{ ml: 1, mt: 1, mb: 1 }}
             endIcon={<Upload />}
             onClick={() => setImporting(true)}
+            data-testid="members-import-open"
           >
             {translateMsgImport}
           </Button>
@@ -90,6 +92,7 @@ export default function AddMemberRow({ fetchFunc }: { fetchFunc: () => void }) {
           changeFunc={changeFunc}
           blurFunc={queryValidity}
           autofocus={true}
+          dataTestId="member-name"
         />
       </TableCell>
       <TableCell padding="none" sx={{ px: 1 }}>
@@ -98,6 +101,7 @@ export default function AddMemberRow({ fetchFunc }: { fetchFunc: () => void }) {
           status={status}
           changeFunc={changeFunc}
           blurFunc={queryValidity}
+          dataTestId="member-nif"
         />
       </TableCell>
       <TableCell padding="none" sx={{ px: 1 }}>
@@ -107,10 +111,15 @@ export default function AddMemberRow({ fetchFunc }: { fetchFunc: () => void }) {
           status={status}
           changeFunc={changeFunc}
           blurFunc={queryValidity}
+          dataTestId="member-joined"
         />
       </TableCell>
       <TableCell>
-        <IconButton onClick={add} loading={status.isLoading()}>
+        <IconButton
+          onClick={add}
+          loading={status.isLoading()}
+          data-testid="members-add-add"
+        >
           <Add />
         </IconButton>
       </TableCell>

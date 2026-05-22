@@ -87,7 +87,7 @@ export const MembersPage = () => {
     { key: 3, label: "Soci/a des de", width: 25 },
     { key: 4, label: "Acció", width: 5 },
   ];
-  const rows = status.result?.items.map((member: Member) => (
+  const rows = status.result?.items.map((member: Member, index: number) => (
     <TableRow key={member.id}>
       <EditableCell
         component="th"
@@ -96,6 +96,7 @@ export const MembersPage = () => {
         name="name"
         currentValue={member.name}
         updateFunc={patchMember(member.id, "name")}
+        dataTestId={index === 0 ? "member-inline-name" : ""}
       />
       <EditableCell
         width="25%"
@@ -105,7 +106,10 @@ export const MembersPage = () => {
       />
       <TableCell width="25%">{member.joined_on}</TableCell>
       <TableCell width="5%">
-        <DeleteButton deleteFunc={() => deleteMember(member.id)} />
+        <DeleteButton
+          deleteFunc={() => deleteMember(member.id)}
+          dataTestId={index === 0 ? "member-delete" : ""}
+        />
       </TableCell>
     </TableRow>
   ));

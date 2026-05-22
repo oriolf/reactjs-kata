@@ -70,6 +70,9 @@ export const LoginPage = () => {
               autoFocus
               error={status.hasError("email")}
               helperText={status.errorText("email")}
+              slotProps={{
+                htmlInput: { "data-testid": "login-email" },
+              }}
             />
             <TextField
               margin="normal"
@@ -83,6 +86,7 @@ export const LoginPage = () => {
               error={status.hasError("password")}
               helperText={status.errorText("password")}
               slotProps={{
+                htmlInput: { "data-testid": "login-password" },
                 input: {
                   endAdornment: (
                     <InputAdornment position="end">
@@ -104,6 +108,7 @@ export const LoginPage = () => {
               loading={status.isLoading()}
               loadingPosition="end"
               endIcon={<LoginIcon />}
+              data-testid="login-button"
             >
               {translateMsg}
             </Button>

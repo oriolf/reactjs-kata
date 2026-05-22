@@ -167,6 +167,7 @@ export default function ImportMembersDialog({
         tabIndex={-1}
         endIcon={<Upload />}
         sx={{ mt: 1, mb: 1 }}
+        data-testid="members-import-file"
       >
         {translateMsgSelect}
         <VisuallyHiddenInput type="file" onChange={handleFile} />
@@ -306,7 +307,12 @@ export default function ImportMembersDialog({
     </>
   );
   const addButton = (status.isPending() || status.isLoading()) && (
-    <Button disabled={addDisabled()} loading={status.isLoading()} onClick={add}>
+    <Button
+      disabled={addDisabled()}
+      loading={status.isLoading()}
+      onClick={add}
+      data-testid="members-import-add"
+    >
       {translateMsgAdd}
     </Button>
   );
@@ -320,7 +326,9 @@ export default function ImportMembersDialog({
         {error}
       </DialogContent>
       <DialogActions>
-        <Button onClick={closeFunc}>{translateMsgClose}</Button>
+        <Button onClick={closeFunc} data-testid="members-import-close">
+          {translateMsgClose}
+        </Button>
         {addButton}
       </DialogActions>
     </Dialog>

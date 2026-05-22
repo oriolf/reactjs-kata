@@ -7,7 +7,10 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "test": "jest tests"
+    "test-unit": "jest tests",
+    "test-e2e": "playwright test",
+    "test-report": "playwright show-report",
+    "test": "jest tests && playwright test"
   },
   "dependencies": {
     "@emotion/react": "latest",
@@ -21,6 +24,9 @@
   "devDependencies": {
     "@babel/preset-env": "^7.28.6",
     "@babel/preset-typescript": "^7.28.5",
+    "@playwright/test": "^1.59.1",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^25.6.0",
     "@types/react": "latest",
     "@types/react-dom": "latest",
     "@vitejs/plugin-react": "latest",

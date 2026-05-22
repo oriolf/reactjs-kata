@@ -9,6 +9,7 @@ export default function RowField({
   autofocus,
   changeFunc,
   blurFunc,
+  dataTestId,
 }: {
   name: string;
   type?: "text" | "date";
@@ -16,6 +17,7 @@ export default function RowField({
   autofocus?: boolean;
   changeFunc: (value: { [name]: string }) => void;
   blurFunc: () => void;
+  dataTestId: string;
 }) {
   const [pristine, setPristine] = useState(true);
   const onBlur = () => {
@@ -34,6 +36,9 @@ export default function RowField({
       autoFocus={autofocus}
       error={!pristine && status.hasError(name)}
       helperText={!pristine && status.errorText(name)}
+      slotProps={{
+        htmlInput: { "data-testid": dataTestId },
+      }}
     />
   );
 }

@@ -65,6 +65,7 @@ export default function PaginatedTable({
               size="small"
               onInput={debounce(handleFilter, 250)}
               slotProps={{
+                htmlInput: { "data-testid": "table-filter" },
                 input: {
                   startAdornment: (
                     <InputAdornment position="start">

@@ -84,10 +84,10 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 
 const translateMsgs = ["Inici", "Inicia sessió", "Membres", "Perfil"];
 const allMenuItems: { label: string; href: string; icon: any }[] = [
-  { label: translateMsgs[0], href: "/", icon: <HomeIcon /> },
-  { label: translateMsgs[1], href: "/login", icon: <LoginIcon /> },
-  { label: translateMsgs[2], href: "/members", icon: <PeopleIcon /> },
-  { label: translateMsgs[3], href: "/profile", icon: <PersonIcon /> },
+  { label: translateMsgs[0], href: "", icon: <HomeIcon /> },
+  { label: translateMsgs[1], href: "login", icon: <LoginIcon /> },
+  { label: translateMsgs[2], href: "members", icon: <PeopleIcon /> },
+  { label: translateMsgs[3], href: "profile", icon: <PersonIcon /> },
 ];
 
 export default function Layout({
@@ -179,8 +179,9 @@ export default function Layout({
             <ListItem
               key={item.label}
               component={Link}
-              to={item.href}
+              to={"/" + item.href}
               disablePadding
+              data-testid={"menu-" + item.href}
             >
               <ListItemButton>
                 <ListItemIcon>{item.icon}</ListItemIcon>

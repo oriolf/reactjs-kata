@@ -15,6 +15,7 @@ export default function EditableCell({
   width,
   currentValue,
   updateFunc,
+  dataTestId,
 }: {
   name: string;
   component?: any;
@@ -22,6 +23,7 @@ export default function EditableCell({
   width: any;
   currentValue: any;
   updateFunc: (x: string) => Promise<void>;
+  dataTestId?: string;
 }) {
   const [status, setStatus] = useState<EditingStatus>(IdleEditingStatus());
   const [value, setValue] = useState(currentValue);
@@ -57,6 +59,7 @@ export default function EditableCell({
       error={status.hasError(name)}
       helperText={status.errorText(name)}
       slotProps={{
+        htmlInput: { "data-testid": dataTestId },
         input: {
           endAdornment: status.isLoading() && (
             <InputAdornment position="end">
@@ -68,10 +71,10 @@ export default function EditableCell({
     />
   );
   const current = (
-    <>
+    <span data-testid={dataTestId}>
       {currentValue}
       {over && <EditIcon fontSize="inherit" color="action" sx={{ ml: 1 }} />}
-    </>
+    </span>
   );
   return (
     <TableCell

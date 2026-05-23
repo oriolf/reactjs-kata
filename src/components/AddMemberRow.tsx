@@ -26,10 +26,10 @@ export default function AddMemberRow({ fetchFunc }: { fetchFunc: () => void }) {
         let errors: { [key: string]: string[] } = {};
         for (var k in err.errors) {
           if (k in values) {
-            errors[k] = err.errors[k];
+            errors[k] = err.errors.fields[k];
           }
         }
-        setStatus(status.setErrors({ errors: errors }));
+        setStatus(status.setErrors({ errors: { global: [], fields: errors } }));
       });
   };
 

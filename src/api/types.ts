@@ -2,10 +2,13 @@ import { sendAlerts } from "../utils";
 
 export type JsonOk = { ok: boolean };
 
+export type JsonApiError = {
+  global: string[];
+  fields: { [key: string]: string[] };
+};
+
 export type JsonError = {
-  errors: {
-    [key: string]: string[];
-  };
+  errors: JsonApiError;
 };
 
 export type ListResponse<T> = {
@@ -85,8 +88,10 @@ export class ApiCallStatus<T> {
   hasError(key: string): boolean {
     return (
       !!this.errors &&
-      this.errors.errors[key] &&
-      this.errors.errors[key].length > 0
+      this.errors.errors &&
+      this.errors.errors.fields &&
+      this.errors.errors.fields[key] &&
+      this.errors.errors.fields[key].length > 0
     );
   }
 
@@ -95,7 +100,7 @@ export class ApiCallStatus<T> {
       return;
     }
 
-    return this.errors?.errors[key][0];
+    return this.errors?.errors.fields[key][0];
   }
 }
 
@@ -165,15 +170,19 @@ export class EditingStatus {
   }
 
   clearErrors(): EditingStatus {
-    return new EditingStatus(this.editing, false, { errors: {} });
+    return new EditingStatus(this.editing, false, {
+      errors: { global: [], fields: {} },
+    });
   }
 
   hasError(key: string): boolean {
     const e = this.errors;
     return (
       !!e &&
-      ((e.errors[key] && e.errors[key].length > 0) ||
-        (e.errors["__form__"] && e.errors["__form__"].length > 0))
+      ((e.errors.fields &&
+        e.errors.fields[key] &&
+        e.errors.fields[key].length > 0) ||
+        (e.errors.global && e.errors.global.length > 0))
     );
   }
 
@@ -183,7 +192,7 @@ export class EditingStatus {
     }
 
     let errs = this.errors?.errors;
-    return errs[key] ? errs[key][0] : errs["__form__"][0];
+    return errs.fields[key] ? errs.fields[key][0] : errs.global[0];
   }
 }
 

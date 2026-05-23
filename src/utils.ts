@@ -6,7 +6,7 @@ export function sendAlerts(
   data: JsonError
 ) {
   if (isError(data)) {
-    let formErrors = data.errors["__form__"];
+    let formErrors = data.errors.global;
     if (formErrors) {
       for (let msg of formErrors) {
         alertFunc(NewAlertMessage(msg));

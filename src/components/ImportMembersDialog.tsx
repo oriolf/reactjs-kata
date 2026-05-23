@@ -296,7 +296,7 @@ export default function ImportMembersDialog({
       <DialogContentText>{translateMsgError}</DialogContentText>
       <DialogContentText component="span">
         <ul>
-          {status.errors.errors["__form__"].map((e, i) => (
+          {status.errors.errors.global.map((e, i) => (
             <li key={i}>{e}</li>
           ))}
         </ul>

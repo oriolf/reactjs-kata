@@ -9,7 +9,7 @@ export default function TableErrors({
   errors: JsonError;
   columnCount: number;
 }) {
-  const errs = errors.errors["__form__"];
+  const errs = errors.errors.global;
   return (
     <>
       {errs.map((err) => (

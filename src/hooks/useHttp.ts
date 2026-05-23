@@ -1,10 +1,10 @@
 import { useAuth } from "./useAuth";
-import type { JsonError } from "../api/types";
+import type { JsonApiError, JsonError } from "../api/types";
 
 const BASE_URL = "http://localhost:8080/";
 
 export class ApiError extends Error {
-  errors: { [key: string]: string[] };
+  errors: JsonApiError;
 
   constructor(json: JsonError) {
     super("ApiError");

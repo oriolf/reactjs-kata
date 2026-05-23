@@ -23,9 +23,14 @@ Laia,33333333P,2023-01-01
 Ramón,44444444A,2024-01-01
 Incorrecte,,3000-01-01" > e2e/test-members.csv
 
+trap cleanup EXIT
+
+function cleanup {
+    kill $backendPID
+    kill $frontendPID
+    rm db.db
+    rm backend
+    rm e2e/test-members.csv
+}
+
 npm run test
-kill $backendPID
-kill $frontendPID
-rm db.db
-rm backend
-rm e2e/test-members.csv

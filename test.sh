@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-backendFolder="../simple-app/example/"
+backendFolder="../simple-app/examples/simple"
 
 cd $backendFolder
 go build -o backend

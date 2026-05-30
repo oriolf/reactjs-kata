@@ -13,6 +13,10 @@ export class ApiError extends Error {
   }
 }
 
+function jsonHeaders() {
+  return { "Content-Type": "application/json" };
+}
+
 export const useHttp = () => {
   const { logout } = useAuth();
 
@@ -35,6 +39,7 @@ export const useHttp = () => {
       method: "POST",
       credentials: "include",
       body: JSON.stringify(body),
+      headers: jsonHeaders(),
     });
 
     return await result(res);
@@ -45,6 +50,7 @@ export const useHttp = () => {
       method: "PATCH",
       credentials: "include",
       body: JSON.stringify(body),
+      headers: jsonHeaders(),
     });
 
     return await result(res);
@@ -55,6 +61,7 @@ export const useHttp = () => {
       method: "QUERY",
       credentials: "include",
       body: JSON.stringify(body),
+      headers: jsonHeaders(),
     });
 
     return await result(res);
